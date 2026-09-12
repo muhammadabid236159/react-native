@@ -1,16 +1,13 @@
 import React from 'react';
-import {View} from 'react-native';
-import './global.css';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import LoginScreen from './src/components/LoginScreen';
-import RegistrationScreen  from './src/components/RegisterationScreen';
-
+import ContactListScreen from './Screens/ContactListScreen';
 
 const App = () => {
   return (
-    <View className="flex-1">
-      <RegistrationScreen/>
-    </View>
+    <SafeAreaProvider>
+      <ContactListScreen />
+    </SafeAreaProvider>
   );
 };
 
