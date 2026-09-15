@@ -14,6 +14,7 @@ const StudentList = ({ students }) => {
       keyExtractor={(item) => item.id}
     />
   );
+  
 };
 
 export default StudentList;

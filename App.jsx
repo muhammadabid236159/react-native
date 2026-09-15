@@ -1,12 +1,14 @@
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import ContactListScreen from './Screens/ContactListScreen';
+import UseEffectHook from './src/components/Useeffecthook';
+import Useeffecthookpart2 from './src/components/Useeffecthookpart2';
+
 
 const App = () => {
   return (
     <SafeAreaProvider>
-      <ContactListScreen />
+      <Useeffecthookpart2/>
     </SafeAreaProvider>
   );
 };

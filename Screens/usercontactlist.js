@@ -29,6 +29,12 @@ const contacts = [
     phone: '03441234567',
     email: 'hamza@gmail.com',
   },
+  {
+    id: '6',
+    name: 'Abid',
+    phone: '03441234567',
+    email: 'hamza@gmail.com',
+  },
 ];
 
 export default contacts;
