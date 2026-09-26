@@ -13,7 +13,6 @@ const Loader = () => {
           {loading ? 'Hide Loader' : 'Show Loader'}
         </Text>
       </TouchableOpacity>
-
      {loading && (
   <View style={{ alignItems: "center" }}>
     <ActivityIndicator size="large" />

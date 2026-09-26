@@ -1,12 +1,13 @@
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-import Loader from './src/components/Loader';
+import StatusBar from './src/components/StatusBar';
+import PutApi from './src/components/PutApi';
 
 const App = () => {
   return (
     <SafeAreaProvider>
-      <Loader />
+      <StatusBar />
+      <PutApi />
     </SafeAreaProvider>
   );
 };
