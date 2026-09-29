@@ -7,7 +7,6 @@ const API_URL = 'http://192.168.1.11:3000/users'
 const Api = () => {
   const [data, setData] = useState([])
   const [error, setError] = useState('')
-
   useEffect(() => {
     const getUsers = async () => {
       try {
