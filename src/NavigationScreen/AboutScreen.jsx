@@ -2,7 +2,12 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 
 const AboutScreen = ({ navigation, route }) => {
-  const { name, version, framework, message } = route.params
+  const { 
+    name = 'Muhammad Abid', 
+    version = '1.0.0', 
+    framework = 'React Native', 
+    message = 'Welcome to About Screen' 
+  } = route?.params || {}
 
   return (
     <View style={styles.container}>
@@ -12,7 +17,6 @@ const AboutScreen = ({ navigation, route }) => {
         <Text style={styles.title}>About Screen</Text>
         <Text style={styles.message}>{message}</Text>
       </View>
-
       <View style={styles.infoCard}>
         <Text style={styles.infoLabel}>Developer</Text>
         <Text style={styles.infoValue}>{name}</Text>

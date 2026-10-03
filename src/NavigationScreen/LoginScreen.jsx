@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
     View,
     Text,
@@ -9,6 +9,7 @@ import {
     Platform,
     ScrollView,
     Pressable,
+
     Modal,
 } from 'react-native'
 
@@ -18,6 +19,7 @@ const LoginScreen = ({ navigation }) => {
     const [showPassword, setShowPassword] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [modalMessage, setModalMessage] = useState('')
+    const passwordRef = useRef(null)
 
     const handleLogin = () => {
         const tempEmail = 'abid@admin.com'
@@ -63,6 +65,9 @@ const LoginScreen = ({ navigation }) => {
                         onChangeText={setEmail}
                         keyboardType="email-address"
                         autoCapitalize="none"
+                        returnKeyType="next"
+                        onSubmitEditing={() => passwordRef.current?.focus()}
+                        blurOnSubmit={false}
                     />
                 </View>
 
@@ -71,12 +76,15 @@ const LoginScreen = ({ navigation }) => {
 
                     <View style={styles.passwordBox}>
                         <TextInput
+                            ref={passwordRef}
                             style={styles.passwordInput}
                             placeholder="Enter your password"
                             placeholderTextColor="#999"
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry={!showPassword}
+                            returnKeyType="done"
+                            onSubmitEditing={handleLogin}
                         />
 
                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -101,7 +109,7 @@ const LoginScreen = ({ navigation }) => {
                 <View style={styles.signupContainer}>
                     <Text style={styles.accountText}>Don't have an account?</Text>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                         <Text style={styles.signupText}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
