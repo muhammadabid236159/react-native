@@ -9,11 +9,14 @@ import {
     Platform,
     ScrollView,
     Pressable,
-
     Modal,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useCounterStore } from '../store/useCounterStore'
+import ThemeToggleButton from '../components/ThemeToggleButton'
 
 const LoginScreen = ({ navigation }) => {
+    const { isDarkMode } = useCounterStore()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
@@ -33,32 +36,47 @@ const LoginScreen = ({ navigation }) => {
         }
     }
 
+    const theme = {
+        bg: isDarkMode ? '#0F172A' : '#F8FAFC',
+        cardBg: isDarkMode ? '#1E293B' : '#FFFFFF',
+        text: isDarkMode ? '#F8FAFC' : '#0F172A',
+        subtitle: isDarkMode ? '#94A3B8' : '#64748B',
+        label: isDarkMode ? '#CBD5E1' : '#334155',
+        inputBg: isDarkMode ? '#1E293B' : '#FFFFFF',
+        inputBorder: isDarkMode ? '#334155' : '#CBD5E1',
+    }
+
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-            <ScrollView
-                contentContainerStyle={styles.scrollContainer}
-                keyboardShouldPersistTaps="handled"
+        <SafeAreaView edges={['top']} style={[styles.safeContainer, { backgroundColor: theme.bg }]}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
-               
+                <ScrollView
+                    contentContainerStyle={styles.scrollContainer}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    {/* Top Bar with Theme Toggle */}
+                    <View style={styles.topBar}>
+                        <ThemeToggleButton />
+                    </View>
 
-                <View style={styles.logo}>
-                    <Text style={styles.logoText}>A</Text>
-                </View>
+                    <View style={styles.logo}>
+                        <Text style={styles.logoText}>A</Text>
+                    </View>
 
-                <Text style={styles.title}>Welcome Back</Text>
+                <Text style={[styles.title, { color: theme.text }]}>Welcome Back</Text>
 
-                <Text style={styles.subtitle}>
+                <Text style={[styles.subtitle, { color: theme.subtitle }]}>
                     Login to continue to your account
                 </Text>
 
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Email Address</Text>
+                    <Text style={[styles.label, { color: theme.label }]}>Email Address</Text>
 
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }]}
                         placeholder="Enter your email"
                         placeholderTextColor="#999"
                         value={email}
@@ -72,12 +90,12 @@ const LoginScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Password</Text>
+                    <Text style={[styles.label, { color: theme.label }]}>Password</Text>
 
-                    <View style={styles.passwordBox}>
+                    <View style={[styles.passwordBox, { backgroundColor: theme.inputBg, borderColor: theme.inputBorder }]}>
                         <TextInput
                             ref={passwordRef}
-                            style={styles.passwordInput}
+                            style={[styles.passwordInput, { color: theme.text }]}
                             placeholder="Enter your password"
                             placeholderTextColor="#999"
                             value={password}
@@ -128,23 +146,33 @@ const LoginScreen = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 
 export default LoginScreen
 
 const styles = StyleSheet.create({
+    safeContainer: {
+        flex: 1,
+    },
+
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
     },
 
     scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
         paddingHorizontal: 24,
-        paddingVertical: 40,
+        paddingTop: 16,
+        paddingBottom: 32,
+    },
+
+    topBar: {
+        alignItems: 'flex-end',
+        marginBottom: 16,
     },
 
     logo: {
@@ -236,18 +264,24 @@ const styles = StyleSheet.create({
     },
 
     loginButton: {
-        height: 55,
+        height: 54,
         backgroundColor: '#2563EB',
-        borderRadius: 12,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 3,
+        elevation: 4,
+        shadowColor: '#2563EB',
+        shadowOpacity: 0.35,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+        marginTop: 6,
     },
 
     loginText: {
         color: '#FFFFFF',
         fontSize: 17,
         fontWeight: '700',
+        letterSpacing: 0.3,
     },
 
     signupContainer: {

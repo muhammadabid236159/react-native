@@ -1,66 +1,83 @@
 import React from 'react'
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useCounterStore } from '../store/useCounterStore'
+import ThemeToggleButton from '../components/ThemeToggleButton'
 
 const TopTab = createMaterialTopTabNavigator()
 
 // Tab 1: Posts / Feed
-const FeedTab = ({ navigation }) => (
-  <View style={styles.tabContainer}>
-    <Text style={styles.emoji}>📰</Text>
-    <Text style={styles.tabTitle}>Feed Screen</Text>
-    <Text style={styles.tabSubtitle}>Check out the latest updates and posts here!</Text>
-    <TouchableOpacity
-      style={styles.btn}
-      onPress={() => navigation.navigate('About', {
-        name: 'Muhammad Abid',
-        version: '1.0.0',
-        framework: 'React Native',
-        message: 'Hello from Feed Tab!',
-      })}
-      activeOpacity={0.8}
-    >
-      <Text style={styles.btnText}>Go to About →</Text>
-    </TouchableOpacity>
-  </View>
-)
+const FeedTab = ({ navigation }) => {
+  const { isDarkMode } = useCounterStore()
+  return (
+    <View style={[styles.tabContainer, { backgroundColor: isDarkMode ? '#0F172A' : '#F8FAFC' }]}>
+      <Text style={styles.emoji}>📰</Text>
+      <Text style={[styles.tabTitle, { color: isDarkMode ? '#F8FAFC' : '#0F172A' }]}>Feed Screen</Text>
+      <Text style={[styles.tabSubtitle, { color: isDarkMode ? '#94A3B8' : '#64748B' }]}>Check out the latest updates and posts here!</Text>
+      <TouchableOpacity
+        style={[styles.btn, { backgroundColor: isDarkMode ? '#3B82F6' : '#2563EB' }]}
+        onPress={() => navigation.navigate('About', {
+          name: 'Muhammad Abid',
+          version: '1.0.0',
+          framework: 'React Native',
+          message: 'Hello from Feed Tab!',
+        })}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.btnText}>Go to About →</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
 
 // Tab 2: Trending / Popular
-const TrendingTab = () => (
-  <View style={styles.tabContainer}>
-    <Text style={styles.emoji}>🔥</Text>
-    <Text style={styles.tabTitle}>Trending Screen</Text>
-    <Text style={styles.tabSubtitle}>See what is popular right now!</Text>
-  </View>
-)
+const TrendingTab = () => {
+  const { isDarkMode } = useCounterStore()
+  return (
+    <View style={[styles.tabContainer, { backgroundColor: isDarkMode ? '#0F172A' : '#F8FAFC' }]}>
+      <Text style={styles.emoji}>🔥</Text>
+      <Text style={[styles.tabTitle, { color: isDarkMode ? '#F8FAFC' : '#0F172A' }]}>Trending Screen</Text>
+      <Text style={[styles.tabSubtitle, { color: isDarkMode ? '#94A3B8' : '#64748B' }]}>See what is popular right now!</Text>
+    </View>
+  )
+}
 
 // Tab 3: Notifications / Alerts
-const NotificationsTab = () => (
-  <View style={styles.tabContainer}>
-    <Text style={styles.emoji}>🔔</Text>
-    <Text style={styles.tabTitle}>Notifications Screen</Text>
-    <Text style={styles.tabSubtitle}>All your recent alerts and activity.</Text>
-  </View>
-)
+const NotificationsTab = () => {
+  const { isDarkMode } = useCounterStore()
+  return (
+    <View style={[styles.tabContainer, { backgroundColor: isDarkMode ? '#0F172A' : '#F8FAFC' }]}>
+      <Text style={styles.emoji}>🔔</Text>
+      <Text style={[styles.tabTitle, { color: isDarkMode ? '#F8FAFC' : '#0F172A' }]}>Notifications Screen</Text>
+      <Text style={[styles.tabSubtitle, { color: isDarkMode ? '#94A3B8' : '#64748B' }]}>All your recent alerts and activity.</Text>
+    </View>
+  )
+}
 
 const HomeScreen = () => {
+  const { isDarkMode } = useCounterStore()
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Home</Text>
-        <TouchableOpacity style={styles.searchIcon}>
-          <Icon name="search-outline" size={22} color="#0F172A" />
-        </TouchableOpacity>
+    <SafeAreaView edges={['top']} style={[styles.safeArea, { backgroundColor: isDarkMode ? '#1E293B' : '#FFFFFF' }]}>
+      <View style={[styles.header, { backgroundColor: isDarkMode ? '#1E293B' : '#FFFFFF', borderBottomColor: isDarkMode ? '#334155' : '#F1F5F9' }]}>
+        <Text style={[styles.headerTitle, { color: isDarkMode ? '#F8FAFC' : '#0F172A' }]}>Home</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <ThemeToggleButton />
+          <TouchableOpacity style={[styles.searchIcon, { backgroundColor: isDarkMode ? '#334155' : '#F1F5F9', borderColor: isDarkMode ? '#475569' : '#E2E8F0' }]}>
+            <Icon name="search-outline" size={20} color={isDarkMode ? '#F8FAFC' : '#0F172A'} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <TopTab.Navigator
         initialRouteName="Feed"
         screenOptions={{
-          tabBarActiveTintColor: '#2563EB',
-          tabBarInactiveTintColor: '#64748B',
+          tabBarActiveTintColor: isDarkMode ? '#60A5FA' : '#2563EB',
+          tabBarInactiveTintColor: isDarkMode ? '#94A3B8' : '#64748B',
           tabBarIndicatorStyle: {
-            backgroundColor: '#2563EB',
+            backgroundColor: isDarkMode ? '#60A5FA' : '#2563EB',
             height: 3,
             borderRadius: 2,
           },
@@ -70,7 +87,7 @@ const HomeScreen = () => {
             textTransform: 'capitalize',
           },
           tabBarStyle: {
-            backgroundColor: '#FFFFFF',
+            backgroundColor: isDarkMode ? '#1E293B' : '#FFFFFF',
             elevation: 2,
             shadowColor: '#000',
             shadowOpacity: 0.05,
@@ -110,23 +127,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: 18,
+    paddingTop: 8,
+    paddingBottom: 12,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
   },
 
   headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#0F172A',
+    letterSpacing: -0.3,
   },
 
   searchIcon: {
-    padding: 6,
-    borderRadius: 8,
-    backgroundColor: '#F8FAFC',
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   tabContainer: {
@@ -154,21 +176,27 @@ const styles = StyleSheet.create({
     color: '#64748B',
     textAlign: 'center',
     maxWidth: 280,
-    marginBottom: 20,
+    marginBottom: 24,
+    lineHeight: 22,
   },
 
   btn: {
-    backgroundColor: '#c20e71',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
+    flexDirection: 'row',
     alignItems: 'center',
-    elevation: 2,
+    paddingVertical: 12,
+    paddingHorizontal: 22,
+    borderRadius: 14,
+    elevation: 3,
+    shadowColor: '#2563EB',
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
   },
 
   btnText: {
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '700',
+    letterSpacing: 0.2,
   },
 })

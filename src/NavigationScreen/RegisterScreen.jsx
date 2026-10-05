@@ -11,8 +11,12 @@ import {
     Pressable,
     Modal,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useCounterStore } from '../store/useCounterStore'
+import ThemeToggleButton from '../components/ThemeToggleButton'
 
 const RegisterScreen = ({ navigation }) => {
+    const { isDarkMode } = useCounterStore()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -56,40 +60,56 @@ const RegisterScreen = ({ navigation }) => {
         }
     }
 
-    return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-            <ScrollView
-                contentContainerStyle={styles.scrollContainer}
-                keyboardShouldPersistTaps="handled"
-            >
-                <Pressable
-                    style={styles.backButton}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Text style={styles.backText}>← Back</Text>
-                </Pressable>
+    const theme = {
+        bg: isDarkMode ? '#0F172A' : '#F8FAFC',
+        cardBg: isDarkMode ? '#1E293B' : '#FFFFFF',
+        text: isDarkMode ? '#F8FAFC' : '#0F172A',
+        subtitle: isDarkMode ? '#94A3B8' : '#64748B',
+        label: isDarkMode ? '#CBD5E1' : '#334155',
+        inputBg: isDarkMode ? '#1E293B' : '#FFFFFF',
+        inputBorder: isDarkMode ? '#334155' : '#CBD5E1',
+    }
 
-                {/* Logo */}
-                <View style={styles.logo}>
-                    <Text style={styles.logoText}>A</Text>
-                </View>
+    return (
+        <SafeAreaView edges={['top']} style={[styles.safeContainer, { backgroundColor: theme.bg }]}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.scrollContainer}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.topBar}>
+                        <Pressable
+                            style={styles.backButton}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <Text style={styles.backText}>← Back</Text>
+                        </Pressable>
+
+                        <ThemeToggleButton />
+                    </View>
+
+                    {/* Logo */}
+                    <View style={styles.logo}>
+                        <Text style={styles.logoText}>A</Text>
+                    </View>
 
                 {/* Heading */}
-                <Text style={styles.title}>Create Account 🚀</Text>
+                <Text style={[styles.title, { color: theme.text }]}>Create Account 🚀</Text>
 
-                <Text style={styles.subtitle}>
+                <Text style={[styles.subtitle, { color: theme.subtitle }]}>
                     Sign up to get started
                 </Text>
 
                 {/* Full Name */}
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Full Name</Text>
+                    <Text style={[styles.label, { color: theme.label }]}>Full Name</Text>
 
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }]}
                         placeholder="Enter your name"
                         placeholderTextColor="#999"
                         value={name}
@@ -102,11 +122,11 @@ const RegisterScreen = ({ navigation }) => {
 
                 {/* Email Address */}
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Email Address</Text>
+                    <Text style={[styles.label, { color: theme.label }]}>Email Address</Text>
 
                     <TextInput
                         ref={emailRef}
-                        style={styles.input}
+                        style={[styles.input, { backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }]}
                         placeholder="Enter your email"
                         placeholderTextColor="#999"
                         value={email}
@@ -121,12 +141,12 @@ const RegisterScreen = ({ navigation }) => {
 
                 {/* Password */}
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Password</Text>
+                    <Text style={[styles.label, { color: theme.label }]}>Password</Text>
 
-                    <View style={styles.passwordBox}>
+                    <View style={[styles.passwordBox, { backgroundColor: theme.inputBg, borderColor: theme.inputBorder }]}>
                         <TextInput
                             ref={passwordRef}
-                            style={styles.passwordInput}
+                            style={[styles.passwordInput, { color: theme.text }]}
                             placeholder="Enter your password"
                             placeholderTextColor="#999"
                             value={password}
@@ -147,12 +167,12 @@ const RegisterScreen = ({ navigation }) => {
 
                 {/* Confirm Password */}
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Confirm Password</Text>
+                    <Text style={[styles.label, { color: theme.label }]}>Confirm Password</Text>
 
-                    <View style={styles.passwordBox}>
+                    <View style={[styles.passwordBox, { backgroundColor: theme.inputBg, borderColor: theme.inputBorder }]}>
                         <TextInput
                             ref={confirmPasswordRef}
-                            style={styles.passwordInput}
+                            style={[styles.passwordInput, { color: theme.text }]}
                             placeholder="Confirm your password"
                             placeholderTextColor="#999"
                             value={confirmPassword}
@@ -211,34 +231,46 @@ const RegisterScreen = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 
 export default RegisterScreen
 
 const styles = StyleSheet.create({
+    safeContainer: {
+        flex: 1,
+    },
+
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
     },
 
     scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
         paddingHorizontal: 24,
-        paddingVertical: 35,
+        paddingTop: 16,
+        paddingBottom: 32,
+    },
+
+    topBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
     },
 
     backButton: {
-        alignSelf: 'flex-start',
-        marginBottom: 10,
+        paddingVertical: 6,
+        paddingHorizontal: 4,
     },
 
     backText: {
         color: '#2563EB',
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: '700',
     },
 
     logo: {
@@ -319,19 +351,24 @@ const styles = StyleSheet.create({
     },
 
     registerButton: {
-        height: 52,
+        height: 54,
         backgroundColor: '#2563EB',
-        borderRadius: 12,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 3,
-        marginTop: 10,
+        elevation: 4,
+        shadowColor: '#2563EB',
+        shadowOpacity: 0.35,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+        marginTop: 12,
     },
 
     registerText: {
         color: '#FFFFFF',
         fontSize: 17,
         fontWeight: '700',
+        letterSpacing: 0.3,
     },
 
     loginContainer: {
