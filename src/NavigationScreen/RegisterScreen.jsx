@@ -10,10 +10,13 @@ import {
     ScrollView,
     Pressable,
     Modal,
+    ActivityIndicator,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useCounterStore } from '../store/useCounterStore'
 import ThemeToggleButton from '../components/ThemeToggleButton'
+import { signUpWithEmail } from '../services/auth'
+import { addUser } from '../database/firestorecrud'
 
 const RegisterScreen = ({ navigation }) => {
     const { isDarkMode } = useCounterStore()
@@ -27,12 +30,13 @@ const RegisterScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [modalMessage, setModalMessage] = useState('')
     const [isSuccess, setIsSuccess] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const emailRef = useRef(null)
     const passwordRef = useRef(null)
     const confirmPasswordRef = useRef(null)
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!name.trim() || !email.trim() || !password || !confirmPassword) {
             setModalMessage('Please fill all the fields!')
             setIsSuccess(false)
@@ -47,10 +51,44 @@ const RegisterScreen = ({ navigation }) => {
             return
         }
 
-        // Registration success
-        setIsSuccess(true)
-        setModalMessage('Account created successfully! Please login.')
-        setModalVisible(true)
+        if (password.length < 6) {
+            setModalMessage('Password must be at least 6 characters!')
+            setIsSuccess(false)
+            setModalVisible(true)
+            return
+        }
+
+        try {
+            setLoading(true)
+            const result = await signUpWithEmail(email.trim(), password)
+
+            if (result.success) {
+                // Firestore mein user background mein save karein (UI freeze na ho)
+                addUser(
+                    {
+                        name: name.trim(),
+                        email: email.trim(),
+                    },
+                    result.user?.uid
+                ).catch((dbErr) => {
+                    console.log('Firestore user save warning:', dbErr)
+                })
+
+                setIsSuccess(true)
+                setModalMessage(result.message || 'Account created! A verification link has been sent to your email.')
+                setModalVisible(true)
+            } else {
+                setIsSuccess(false)
+                setModalMessage(result.error || 'Registration failed')
+                setModalVisible(true)
+            }
+        } catch (error) {
+            setIsSuccess(false)
+            setModalMessage(error.message || 'An unexpected error occurred.')
+            setModalVisible(true)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleModalClose = () => {
@@ -192,10 +230,15 @@ const RegisterScreen = ({ navigation }) => {
 
                 {/* Register Button */}
                 <TouchableOpacity
-                    style={styles.registerButton}
+                    style={[styles.registerButton, loading && { opacity: 0.7 }]}
                     onPress={handleRegister}
+                    disabled={loading}
                 >
-                    <Text style={styles.registerText}>Sign Up</Text>
+                    {loading ? (
+                        <ActivityIndicator color="#FFFFFF" size="small" />
+                    ) : (
+                        <Text style={styles.registerText}>Sign Up</Text>
+                    )}
                 </TouchableOpacity>
 
                 {/* Back to Login */}

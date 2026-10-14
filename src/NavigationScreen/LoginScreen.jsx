@@ -10,10 +10,12 @@ import {
     ScrollView,
     Pressable,
     Modal,
+    ActivityIndicator,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useCounterStore } from '../store/useCounterStore'
 import ThemeToggleButton from '../components/ThemeToggleButton'
+import { signInWithEmail } from '../services/auth'
 
 const LoginScreen = ({ navigation }) => {
     const { isDarkMode } = useCounterStore()
@@ -22,16 +24,24 @@ const LoginScreen = ({ navigation }) => {
     const [showPassword, setShowPassword] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [modalMessage, setModalMessage] = useState('')
+    const [loading, setLoading] = useState(false)
     const passwordRef = useRef(null)
 
-    const handleLogin = () => {
-        const tempEmail = 'abid@admin.com'
-        const tempPassword = 'abid123'
+    const handleLogin = async () => {
+        if (!email.trim() || !password) {
+            setModalMessage('Please enter both email and password!')
+            setModalVisible(true)
+            return
+        }
 
-        if (email === tempEmail && password === tempPassword) {
+        setLoading(true)
+        const result = await signInWithEmail(email.trim(), password)
+        setLoading(false)
+
+        if (result.success) {
             navigation.navigate('Home')
         } else {
-            setModalMessage('Invalid email or password!')
+            setModalMessage(result.error || 'Invalid email or password!')
             setModalVisible(true)
         }
     }
@@ -118,10 +128,15 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={styles.loginButton}
+                    style={[styles.loginButton, loading && { opacity: 0.7 }]}
                     onPress={handleLogin}
+                    disabled={loading}
                 >
-                    <Text style={styles.loginText}>Login</Text>
+                    {loading ? (
+                        <ActivityIndicator color="#FFFFFF" size="small" />
+                    ) : (
+                        <Text style={styles.loginText}>Login</Text>
+                    )}
                 </TouchableOpacity>
 
                 <View style={styles.signupContainer}>
